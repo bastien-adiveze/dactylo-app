@@ -1,6 +1,7 @@
-import { Component, HostListener, signal } from '@angular/core';
+import { Component, HostListener, signal, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-import {DecimalPipe} from '@angular/common';
+import { DecimalPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -9,10 +10,11 @@ import {DecimalPipe} from '@angular/common';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
   nbWords = 10;
+  motsList: string[] = [];
   protected readonly title = signal('dactylo-app');
-  txtCible = this.genererPhrase(this.nbWords);
+  txtCible = "";
   txtSaisie = "";
   correctChars = 0;
   incorrectChars = 0;
@@ -26,7 +28,31 @@ export class App {
   rawWpmEvolution: number[] = [];
   chart: any = null;
   lastKeyPressed : string = "Shift";
-  
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.chargerMots();
+  }
+
+  chargerMots() {
+    this.http.get('words_fr.txt', { responseType: 'text' }).subscribe({
+      next: (content) => {
+        this.motsList = content
+          .split('\n')
+          .map(word => word.trim())
+          .filter(word => word.length > 0);
+        if (this.motsList.length > 0) {
+          this.txtCible = this.genererPhrase(this.nbWords);
+        }
+      },
+      error: (err) => {
+        // Fallback si le fichier n'existe pas
+        this.motsList = ["le", "plus", "grand", "danger", "pour", "la", "plupart", "d'entre", "nous", "n'est", "pas", "que", "notre", "objectif", "soit", "trop", "élevé"];
+        this.txtCible = this.genererPhrase(this.nbWords);
+      }
+    });
+  }
 
   @HostListener('window:keydown', ['$event'])
   gererFrappe(e: KeyboardEvent) {
@@ -232,10 +258,10 @@ export class App {
     }
   }
   genererPhrase(nbWords: number): string {
-    const mots = ["le", "plus", "grand", "danger", "pour", "la", "plupart", "d'entre", "nous", "n'est", "pas", "que", "notre", "objectif", "soit", "trop", "élevé", "et", "que", "nous le manquions", "mais", "qu'il soit trop bas et que nous l'atteignions"];
+    if (this.motsList.length === 0) return "";
     let phrase = "";
     for (let i = 0; i < nbWords; i++) {
-      const mot = mots[Math.floor(Math.random() * mots.length)];
+      const mot = this.motsList[Math.floor(Math.random() * this.motsList.length)];
       phrase += mot + (i < nbWords - 1 ? ' ' : '');
     }
     return phrase;

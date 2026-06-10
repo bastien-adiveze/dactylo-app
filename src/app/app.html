@@ -7,10 +7,13 @@
     
   </div>
 
-  <p class="texte-box">Phrase à reproduire :</p>
   <p style="white-space: pre-wrap;" class="texte-box">
-    @for(l of txtCible.split(''); track $index){
-      <span [class]="obtenirStatutLettre($index)">{{l}}</span>
+    @if (txtCible.length > 0) {
+      @for(l of txtCible.split(''); track $index){
+        <span [class]="obtenirStatutLettre($index)">{{l}}</span>
+      }
+    } @else {
+      <span style="color: #999;">Chargement en cours...</span>
     }
   </p>
   <p class="stat">{{correctChars}} corrects,{{incorrectCharsTotal-incorrectChars}} corrected ,{{incorrectCharsTotal}} incorrects, {{calculateWpm(correctChars)| number:'1.0-2'}} WPM,{{calculateAccuracy()| number:'1.0-2'}} accuracy,{{calculateWpm(totKeyPressed)| number:'1.0-2'}} Raw WPM</p>
