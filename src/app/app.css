@@ -1,0 +1,143 @@
+p {
+  white-space: pre-wrap;
+}
+.correct{
+  color: green;
+}
+.incorrect{
+  color: red;
+}
+.pending{
+  color: #d1d0c5;
+}
+.next{
+  animation: clignotement 1s infinite;
+
+}
+
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  min-height: 100vh;
+  background-color: #323437;
+  color: #d1d0c5; 
+  font-family: 'Courier New', Courier, monospace;
+}
+.container {
+  width: 100%;
+  max-width: 800px;
+  padding: 40px;
+  background-color: #2c2e31;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+h1 {
+  text-align: center;
+  color: #e2b714;
+  margin-bottom: 150px;
+  font-size: 64px;
+}
+
+
+.texte-box {
+  font-size: 24px;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  margin-left: 250px;
+  margin-right: 250px;
+  padding: 20px;
+  background-color: #242526;
+  border-radius: 8px;
+  letter-spacing: 3px;
+}
+@keyframes clignotement {
+  0%, 100% { 
+    color: black;
+    background-color: #e2b714;
+    background-opacity: 0.5;
+
+   }
+  50% { 
+    color: black; 
+    background-color: #d1d0c5;
+    background-opacity: 0.5;
+    }
+}
+
+.stat {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+.btn-reset {
+  display: block;
+  margin: 30px auto 0;
+  padding: 10px 20px;
+  font-size: 18px;
+  color: #d1d0c5;
+  background-color: #e2b714;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.segment-controle {
+  display: flex;
+  margin: 30px auto 0;
+  width: 300px;
+}
+
+.segment-btn {
+  flex: 0.5 ;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 18px;
+  color: #e2b714;
+  background-color: #2c2e31;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 10px;
+}
+.segment-btn2 {
+  flex: 2 ;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 18px;
+  color: #e2b714;
+  background-color: #2c2e31;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.result-layout {
+  display: flex;
+  justify-content: center; 
+  align-items: center;    
+  gap: 40px;      
+  margin-top: 40px;    
+  width: 100%;
+}
+
+.side-label {
+  display: flex;
+  flex-direction: column; 
+  font-size: 36px;        
+  color: #e2b714;       
+  font-weight: bold;
+  text-align: center;
+  min-width: 100px;       
+}
+
+
+.label-titre {
+  font-size: 14px;
+  color: #646669;    
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
