@@ -74,18 +74,28 @@ h1 {
   font-size: 18px;
 }
 
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;           
+  margin-top: 40px;        
+}
+
 .btn-reset {
-  display: block;
-  margin: 30px auto 0;
   padding: 10px 20px;
   font-size: 18px;
-  color: #d1d0c5;
+  color: #2c2e31;
   background-color: #e2b714;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  width: 250px; 
+  text-align: center; 
+  transition: opacity 0.2s; 
 }
-
+.btn-reset:hover {
+  opacity: 0.8;
+}
 .segment-controle {
   display: flex;
   margin: 30px auto 0;

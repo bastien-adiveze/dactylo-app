@@ -58,14 +58,16 @@ export class App implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   gererFrappe(e: KeyboardEvent) {
-    if(e.key==="Enter"&&this.lastKeyPressed==="Shift"){
-        this.restartTest();
-        return;
-      }
-    if(e.key==="Tab"){
-      e.preventDefault();
+    if(e.key==="Enter"){
+      if(this.lastKeyPressed==="Shift")
+          this.restartTest(true);
+      if(this.lastKeyPressed==="Tab")
+        this.restartTest(false)
       return;
-    }
+      }
+    if(e.key==="Tab"||e.key==="Enter")
+      e.preventDefault()
+    
     if(this.txtSaisie.length < this.txtCible.length) {
       if (e.key.length === 1) {
         if (this.txtSaisie.length === 0 && !this.tempsDebut) {
@@ -131,7 +133,7 @@ export class App implements OnInit {
     return (input / 5) / timeInMinutes;
   }
 
-  restartTest() {
+  restartTest(newTxt :boolean) {
     this.txtSaisie = "";
     this.correctChars = 0;
     this.incorrectChars = 0;
@@ -142,11 +144,12 @@ export class App implements OnInit {
     this.wpmEvolution = [];
     this.rawWpmEvolution = [];
     this.totKeyPressed = 0;
-    this.txtCible = this.genererPhrase(this.nbWords);
     this.Duree = 0;
     this.tempCorrectChars = 0;
     this.wpmBurst = [];
     this.wpmBurstRawEvolution = [];
+    if(newTxt)
+      this.txtCible = this.genererPhrase(this.nbWords);
   }
 
   calculateAccuracy(): number {
@@ -210,7 +213,6 @@ export class App implements OnInit {
       this.horlogeId = null;
       this.wpmEvolution.push(this.calculateWpm(this.correctChars));
       this.rawWpmEvolution.push(this.calculateWpm(this.totKeyPressed));
-      this.tempCorrectChars = 0;
     }
   }
 
@@ -247,7 +249,7 @@ export class App implements OnInit {
           borderColor: '#3a3b3e',
           backgroundColor: 'rgba(58, 59, 62, 0.1)',
           borderWidth: 2,
-          fill: true,
+          fill: false,
           tension: 0.4,
           pointRadius: 2,
           pointHoverRadius: 6,
@@ -259,7 +261,7 @@ export class App implements OnInit {
           borderColor: '#ff6b6b',
           backgroundColor: 'rgba(255, 107, 107, 0.1)',
           borderWidth: 2,
-          fill: true,
+          fill: false,
           tension: 0.4,
           pointRadius: 2,
           pointHoverRadius: 6,
@@ -313,14 +315,14 @@ export class App implements OnInit {
   }
 
   incrementWords() {
-    this.nbWords += 10;
-    this.restartTest();
+    this.nbWords += 5;
+    this.restartTest(true);
   }
 
   decrementWords() {
-    if (this.nbWords > 10) {
-      this.nbWords -= 10;
-      this.restartTest();
+    if (this.nbWords > 5) {
+      this.nbWords -= 5;
+      this.restartTest(true);
     }
   }
   genererPhrase(nbWords: number): string {
