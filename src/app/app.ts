@@ -14,7 +14,7 @@ export class App implements OnInit {
   nbWords = 10;
   motsList: string[] = [];
   protected readonly title = signal('dactylo-app');
-  txtCible = "";
+  txtCible :string[]=[];
   txtSaisie = "";
   correctChars = 0;
   incorrectChars = 0;
@@ -31,6 +31,15 @@ export class App implements OnInit {
   tempCorrectChars:number = 0;
   chart: any = null;
   lastKeyPressed : string = "Shift";
+  withNumber : boolean =true;
+  touchesDeControle = [
+  'Shift', 'Control', 'Alt', 'Meta', 'AltGraph', 
+  'CapsLock', 'NumLock', 'ScrollLock', 
+  'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 
+  'Home', 'End', 'PageUp', 'PageDown', 
+  'Escape', 'Insert', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
+  'Dead'
+];
 
   constructor(private http: HttpClient) {}
 
@@ -96,7 +105,8 @@ export class App implements OnInit {
           this.txtSaisie = this.txtSaisie.slice(0, -1);
         }
       }
-      this.totKeyPressed++; 
+      if(!this.touchesDeControle.includes(e.key))
+        this.totKeyPressed++; 
       if (this.txtSaisie.length === this.txtCible.length) {
         this.stopHorloge();
         setTimeout(() => {
@@ -213,6 +223,8 @@ export class App implements OnInit {
       this.horlogeId = null;
       this.wpmEvolution.push(this.calculateWpm(this.correctChars));
       this.rawWpmEvolution.push(this.calculateWpm(this.totKeyPressed));
+      if(this.Duree%1 !=0)
+        this.wpmBurst.push((this.tempCorrectChars/5*60/(this.Duree%1)+this.wpmBurstRawEvolution[this.wpmBurstRawEvolution.length-1]+this.wpmBurstRawEvolution[this.wpmBurstRawEvolution.length-2])/3);
     }
   }
 
@@ -237,7 +249,7 @@ export class App implements OnInit {
           borderColor: '#e2b714',
           backgroundColor: 'rgba(226, 183, 20, 0.1)',
           borderWidth: 2,
-          fill: true,
+          fill: false,
           tension: 0.4,
           pointRadius: 2,
           pointHoverRadius: 6,
@@ -261,7 +273,7 @@ export class App implements OnInit {
           borderColor: '#ff6b6b',
           backgroundColor: 'rgba(255, 107, 107, 0.1)',
           borderWidth: 2,
-          fill: false,
+          fill: true,
           tension: 0.4,
           pointRadius: 2,
           pointHoverRadius: 6,
@@ -325,13 +337,30 @@ export class App implements OnInit {
       this.restartTest(true);
     }
   }
-  genererPhrase(nbWords: number): string {
-    if (this.motsList.length === 0) return "";
+  genererPhrase(nbWords: number): string[] {
+    if (this.motsList.length === 0) return [];
     let phrase = "";
+    let long=0;
+    let flag:boolean = false;
     for (let i = 0; i < nbWords; i++) {
-      const mot = this.motsList[Math.floor(Math.random() * this.motsList.length)];
-      phrase += mot + (i < nbWords - 1 ? ' ' : '');
+      if(this.withNumber){
+        long=Math.floor(Math.random()*7);
+        if(long===0){
+          for(let j =0;j<Math.floor(Math.random()*4)+1;j++){
+            phrase+=Math.floor(Math.random()*10);
+          }
+          phrase+=(i < nbWords - 1 ? ' ' : '');
+          flag=true;
+        } 
+      } 
+      if(!flag){
+        const mot = this.motsList[Math.floor(Math.random() * this.motsList.length)];
+        phrase += mot + (i < nbWords - 1 ? ' ' : '');
+        
+      }
+      flag=false;
     }
-    return phrase;
+    return phrase.split('');
   }
+
 }

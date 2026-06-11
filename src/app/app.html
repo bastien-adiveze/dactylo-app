@@ -9,7 +9,7 @@
   @if (tempsFin==null){
   <p style="white-space: pre-wrap;" class="texte-box">
     @if (txtCible.length > 0) {
-      @for(l of txtCible.split(''); track $index){
+      @for(l of txtCible; track $index){
         <span [class]="obtenirStatutLettre($index)">{{l}}</span>
       }
     } @else {
