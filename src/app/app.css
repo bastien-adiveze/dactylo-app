@@ -1,7 +1,6 @@
 p {
   white-space: pre-wrap;
 }
-
 .correct{
   color: green;
 }
@@ -13,7 +12,6 @@ p {
 }
 .next{
   animation: clignotement 1s infinite;
-
 }
 
 :host {
@@ -40,8 +38,6 @@ h1 {
   margin-bottom: 75px;
   font-size: 64px;
 }
-
-
 .texte-box {
   font-size: 24px;
   line-height: 1.5;
@@ -66,7 +62,6 @@ h1 {
     background-opacity: 0.5;
     }
 }
-
 .stat {
   display: flex;
   justify-content: space-around;
@@ -99,7 +94,7 @@ h1 {
 .segment-controle {
   display: flex;
   margin: 30px auto 0;
-  width: 300px;
+  width: 500px;
 }
 
 .segment-btn {
@@ -151,4 +146,75 @@ h1 {
   color: #646669;    
   text-transform: uppercase;
   margin-bottom: 5px;
+}
+
+.settingBtn {
+  padding: 8px 18px;
+  font-size: 18px;
+  font-family: 'Courier New', Courier, monospace;
+  color: #646669;
+  background-color: transparent;
+  border: 2px solid #646669; /* Bordure grise */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0 5px;
+}
+
+.settingBtn:hover {
+  color: #d1d0c5;
+  border-color: #d1d0c5;
+}
+
+
+.settingBtn.active {
+  color: #e2b714;
+  border-color: #e2b714; /* Bordure jaune */
+  background-color: rgba(226, 183, 20, 0.05); /* Léger fond jaune transparent */
+}
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Le menu déroulant qui flotte en dessous */
+.dropdown-menu {
+  position: absolute;
+  top: 110%; /* Place le menu juste en dessous du bouton */
+  left: 50%;
+  transform: translateX(-50%); /* Centre le menu parfaitement */
+  
+  background-color: #2c2e31;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+  padding: 8px;
+  z-index: 100; /* S'assure que le menu passe par-dessus le texte */
+  
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 120px;
+}
+
+/* Les boutons à l'intérieur du menu */
+.dropdown-menu button {
+  background: transparent;
+  color: #646669;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.dropdown-menu button:hover {
+  background-color: rgba(58, 59, 62, 0.4);
+  color: #d1d0c5;
+}
+
+.dropdown-menu button.active {
+  color: #e2b714;
 }

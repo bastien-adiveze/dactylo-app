@@ -1,9 +1,22 @@
 <main>
   <h1>Test de Dactylographie v1</h1>
   <div class="segment-controle">
-    <button class="segment-btn" (click)="decrementWords()">-</button>
-    <button class="segment-btn2" [disabled]="true">{{nbWords}} words</button>
-    <button class="segment-btn" (click)="incrementWords()">+</button>
+    <button class ="settingBtn" [class.active]="withNumber" (click)="changeFlag('withNumber')">Numbers</button>
+    <button class="segment-btn" (click)="decrementSetting()">-</button>
+    <div class="dropdown-container">
+      <button class="segment-btn2" (click)="toggleMenu()">
+        {{ testType === 'words' ? nbWords : timeLimit +'s' }} {{ testType }} ▾
+      </button>
+
+      @if (isMenuOpen) {
+        <div class="dropdown-menu">
+          <button [class.active]="testType === 'words'" (click)="selectMode('words')">words</button>
+          <button [class.active]="testType === 'time'" (click)="selectMode('time')">time</button>
+        </div>
+      }
+    </div>
+    <button class="segment-btn" (click)="incrementSetting()">+</button>
+    <button class ="settingBtn" [class.active]="withUpperCase" (click)="changeFlag('withUpperCase')">UpperCase</button>
     
   </div>
   @if (tempsFin==null){

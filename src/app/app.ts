@@ -32,6 +32,7 @@ export class App implements OnInit {
   chart: any = null;
   lastKeyPressed : string = "Shift";
   withNumber : boolean =true;
+  withUpperCase:boolean=true;
   touchesDeControle = [
   'Shift', 'Control', 'Alt', 'Meta', 'AltGraph', 
   'CapsLock', 'NumLock', 'ScrollLock', 
@@ -39,7 +40,10 @@ export class App implements OnInit {
   'Home', 'End', 'PageUp', 'PageDown', 
   'Escape', 'Insert', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
   'Dead'
-];
+  ];
+  testType : string = 'words';
+  isMenuOpen: boolean = false;
+  timeLimit :number =30;
 
   constructor(private http: HttpClient) {}
 
@@ -326,26 +330,34 @@ export class App implements OnInit {
     });
   }
 
-  incrementWords() {
-    this.nbWords += 5;
-    this.restartTest(true);
+  incrementSetting() {
+    if(this.testType==='words'){
+      this.nbWords += 5;
+      this.restartTest(true);
+    }else if(this.testType==='time'){
+      this.timeLimit+=10;
+    }
   }
 
-  decrementWords() {
-    if (this.nbWords > 5) {
-      this.nbWords -= 5;
-      this.restartTest(true);
+  decrementSetting() {
+    if(this.testType==='words'){
+      if (this.nbWords > 5) {
+        this.nbWords -= 5;
+        this.restartTest(true);
+      }
+    }else if(this.testType==='time'&&this.timeLimit>10){
+      this.timeLimit-=10;
     }
   }
   genererPhrase(nbWords: number): string[] {
     if (this.motsList.length === 0) return [];
     let phrase = "";
-    let long=0;
+    let random=0;
     let flag:boolean = false;
     for (let i = 0; i < nbWords; i++) {
       if(this.withNumber){
-        long=Math.floor(Math.random()*7);
-        if(long===0){
+        random=Math.floor(Math.random()*7);
+        if(random===0){
           for(let j =0;j<Math.floor(Math.random()*4)+1;j++){
             phrase+=Math.floor(Math.random()*10);
           }
@@ -354,7 +366,12 @@ export class App implements OnInit {
         } 
       } 
       if(!flag){
-        const mot = this.motsList[Math.floor(Math.random() * this.motsList.length)];
+        let mot = this.motsList[Math.floor(Math.random() * this.motsList.length)];
+        if(this.withUpperCase){
+          random=Math.floor(Math.random()*7);
+          if(random===0)
+            mot = mot.charAt(0).toUpperCase() + mot.slice(1);
+        }
         phrase += mot + (i < nbWords - 1 ? ' ' : '');
         
       }
@@ -362,5 +379,17 @@ export class App implements OnInit {
     }
     return phrase.split('');
   }
+  changeFlag(option: 'withNumber' | 'withUpperCase'){
+    this[option]=!this[option];
+    this.restartTest(true);
+  }
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+
+selectMode(mode: string) {
+  this.testType = mode;
+  this.isMenuOpen = false;
+}
 
 }
