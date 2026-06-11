@@ -26,6 +26,9 @@ export class App implements OnInit {
   horlogeId: any = null;
   wpmEvolution: number[] = [];
   rawWpmEvolution: number[] = [];
+  wpmBurst: number[] = [];
+  wpmBurstRawEvolution: number[] = [];
+  tempCorrectChars:number = 0;
   chart: any = null;
   lastKeyPressed : string = "Shift";
 
@@ -47,7 +50,6 @@ export class App implements OnInit {
         }
       },
       error: (err) => {
-        // Fallback si le fichier n'existe pas
         this.motsList = ["le", "plus", "grand", "danger", "pour", "la", "plupart", "d'entre", "nous", "n'est", "pas", "que", "notre", "objectif", "soit", "trop", "élevé"];
         this.txtCible = this.genererPhrase(this.nbWords);
       }
@@ -73,6 +75,7 @@ export class App implements OnInit {
         this.txtSaisie += e.key;
         if (e.key === this.txtCible[this.txtSaisie.length - 1]) {
           this.correctChars++;
+          this.tempCorrectChars++;
         } else {
           this.incorrectChars++;
           this.incorrectCharsTotal++;
@@ -84,6 +87,7 @@ export class App implements OnInit {
         if (this.txtSaisie.length > 0) {
           if (this.txtSaisie[this.txtSaisie.length - 1] === this.txtCible[this.txtSaisie.length - 1]) {
             this.correctChars--;
+            this.tempCorrectChars--;
           }else {
             this.incorrectChars--;
           }
@@ -140,6 +144,9 @@ export class App implements OnInit {
     this.totKeyPressed = 0;
     this.txtCible = this.genererPhrase(this.nbWords);
     this.Duree = 0;
+    this.tempCorrectChars = 0;
+    this.wpmBurst = [];
+    this.wpmBurstRawEvolution = [];
   }
 
   calculateAccuracy(): number {
@@ -153,12 +160,46 @@ export class App implements OnInit {
     return accuracy;
   }
 
+  calculateConsistency(): number {
+    if(this.wpmBurstRawEvolution.length===0)
+      return 100
+    let moyenne= 0;
+      for(let j=0; j<this.wpmBurstRawEvolution.length;j++){
+        moyenne += this.wpmBurstRawEvolution[j];
+      }
+      moyenne=moyenne/this.wpmBurstRawEvolution.length;
+    let variance = 0;
+    for (let i = 0; i < this.wpmBurstRawEvolution.length; i++) {
+      variance += Math.pow(this.wpmBurstRawEvolution[i] - moyenne, 2);
+    }
+    variance=Math.sqrt(variance/this.wpmBurstRawEvolution.length);
+    if(moyenne ===0)
+      return 0
+    return(Math.max(0,(100*(1-(variance/moyenne)))))
+  }
+
   lancerHorloge() {
+    let counter = 0;
     this.horlogeId = setInterval(() => { 
       this.wpmEvolution.push(this.calculateWpm(this.correctChars));
       this.rawWpmEvolution.push(this.calculateWpm(this.totKeyPressed));
+      switch(counter){
+        case 0:
+          this.wpmBurst.push(this.tempCorrectChars*12);
+          break;
+        case 1:
+          this.wpmBurst.push((this.tempCorrectChars*12+this.wpmBurstRawEvolution[0])/2);
+          break;
+        default:
+          this.wpmBurst.push((this.tempCorrectChars*12+this.wpmBurstRawEvolution[counter-1]+this.wpmBurstRawEvolution[counter-2])/3);
+          break;
+      }
+      this.wpmBurstRawEvolution.push(this.tempCorrectChars*12);
+      this.tempCorrectChars = 0;
+      counter++;
     }, 1000);
   }
+  
   stopHorloge() {
     if (this.tempsDebut) {
       this.tempsFin = Date.now();
@@ -169,6 +210,7 @@ export class App implements OnInit {
       this.horlogeId = null;
       this.wpmEvolution.push(this.calculateWpm(this.correctChars));
       this.rawWpmEvolution.push(this.calculateWpm(this.totKeyPressed));
+      this.tempCorrectChars = 0;
     }
   }
 
@@ -195,7 +237,7 @@ export class App implements OnInit {
           borderWidth: 2,
           fill: true,
           tension: 0.4,
-          pointRadius: 4.5,
+          pointRadius: 2,
           pointHoverRadius: 6,
           pointBackgroundColor: '#e2b714'
         },
@@ -207,9 +249,21 @@ export class App implements OnInit {
           borderWidth: 2,
           fill: true,
           tension: 0.4,
-          pointRadius: 4.5,
+          pointRadius: 2,
           pointHoverRadius: 6,
           pointBackgroundColor: '#3a3b3e'
+        },
+        {
+          label: 'Burst Speed (WPM)',
+          data: this.wpmBurst,
+          borderColor: '#ff6b6b',
+          backgroundColor: 'rgba(255, 107, 107, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 2,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#ff6b6b'
         }
       ]
 
@@ -221,7 +275,19 @@ export class App implements OnInit {
           intersect: false, 
         },
         plugins: {
-          legend: { display: false }
+          legend: { 
+            display: true,
+            position: 'top',
+            labels: {
+              color: '#d1d0c5',
+              font: {
+                size: 14,
+                family: "'Courier New', Courier, monospace"
+              },
+              usePointStyle: true,
+              padding: 20 
+            }
+          }
         },
         scales: {
           y: {

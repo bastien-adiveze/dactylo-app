@@ -39,6 +39,9 @@
     <p class="side-label">
       {{Duree| number:'1.0-2'}} secondes 
     </p>
+    <p class="side-label">
+      {{calculateConsistency()| number:'1.0-0'}}% consistency
+    </p>
   }
 
   <button class="btn-reset" (click)="restartTest()">
